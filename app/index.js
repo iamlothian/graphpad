@@ -1,5 +1,4 @@
-import d3 from 'd3'
-
+import * as d3 from 'd3';
 // Code goes here
 
 var graph = {
@@ -258,7 +257,7 @@ function enter(d,simulation) {
 	
 	if (!d3.event.active){ 
 	  simulation.alpha(0.1);
-	  simulation.alphatarget(0.01).restart();
+	  simulation.alphaTarget(0.01).restart();
 	}
 	
 }

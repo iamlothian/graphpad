@@ -1,10 +1,19 @@
-var webpack = require('webpack');
-var path = require('path');
+var webpack = require('webpack'),
+    path = require('path'),
+    WebpackCleanupPlugin  = require('webpack-cleanup-plugin'),
+    HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = function() {
     return {
+        module:{
+            rules: [
+                {test: /\.css$/, use: [ 'style-loader', 'css-loader' ]},
+                {test: /\.ts$/, use: 'ts-loader'}
+            ]
+        },
         entry: {
-            main: './app/index.js' //Notice that we do not have an explicit vendor entry here
+            css: "./app/style.css",
+            main: './app/index.js'
         },
         output: {
             filename: '[name].[chunkhash].js',
@@ -24,6 +33,13 @@ module.exports = function() {
             //CommonChunksPlugin will now extract all the common modules from vendor and main bundles
             new webpack.optimize.CommonsChunkPlugin({ 
                 name: 'manifest' //But since there are no more common modules between them we end up with just the runtime code included in the manifest file
+            }),
+            new HtmlWebpackPlugin({
+                template:"index.html",
+                inject:"head"
+            }),
+            new WebpackCleanupPlugin({
+                exclude: [],
             })
         ]
     };

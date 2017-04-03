@@ -13,7 +13,7 @@
         },
         {
             "taskName": "build",
-            "args": ["run","webpack"]
+            "args": ["run","build"]
         },
         {
             "taskName": "test",
