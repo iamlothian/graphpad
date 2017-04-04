@@ -1,40 +1,14 @@
 import * as d3 from 'd3';
+import graph from './data.js';
+import {GraphSimulationManager} from "!ts-loader!./simulation.ts"
 // Code goes here
-
-var graph = {
-  "nodes": [
-    {"id": 0, "group": 0, r:10},
-    {"id": 1, "group": 1, r:10},
-    {"id": 2, "group": 1, r:10},
-    {"id": 3, "group": 1, r:10},
-    {"id": 4, "group": 1, r:10},
-    {"id": 5, "group": 1, r:10},
-    {"id": 6, "group": 1, r:10},
-    {"id": 7, "group": 2, r:10},
-    {"id": 8, "group": 2, r:10},
-    {"id": 9, "group": 2, r:10},
-  ],
-  "links": [
-    {"source": 1, "target": 2, "value": 1},
-    {"source": 2, "target": 3, "value": 1},
-    {"source": 3, "target": 1, "value": 1},
-    {"source": 4, "target": 1, "value": 1},
-    {"source": 5, "target": 2, "value": 1},
-    {"source": 6, "target": 3, "value": 1},
-    {"source": 7, "target": 8, "value": 1},
-    {"source": 8, "target": 9, "value": 1},
-    {"source": 9, "target": 7, "value": 1},
-    {"source": 9, "target": 1, "value": 1},
-  ]
-};
-
-
 
 let color = d3.scaleOrdinal(d3.schemeCategory20);
 
 //###############################################
 // simulations
 //###############################################
+/*
 var Simulation = function(svg) {
   
   let width = +svg.attr("width"),
@@ -70,6 +44,7 @@ var Simulation = function(svg) {
   return simulation
   
 }
+*/
 
 function ticked(link, node) {
   
@@ -84,9 +59,9 @@ function ticked(link, node) {
   
 }
 
-var Render = function(data, svg, simulation, tick){
+var Render = function(data, svg, simulationManager, tick){
   
-let t = d3.transition().duration(1).delay(1);
+  let t = d3.transition().duration(1).delay(1);
   
   // links
   svg.append("g").attr("id","links");
@@ -115,7 +90,7 @@ let t = d3.transition().duration(1).delay(1);
     let link_enter = link.enter()
       .append("line")
         .attr("class", "enter")
-        .attr("stroke-width", function(d) { return Math.sqrt(d.value); })
+        .attr("stroke-width", 2)
 		.style("stroke-opacity", 0.6)
     
     link = link_enter.merge(link);
@@ -147,20 +122,21 @@ let t = d3.transition().duration(1).delay(1);
 	node = node_enter.merge(node);
 	
 	// events
-	node.on("mouseenter", (d, idx, nodes) => enter.call(nodes[idx],d,simulation ))
-	node.on("mouseleave", (d, idx, nodes) => leave.call(nodes[idx],d,simulation ))	
+	// node.on("mouseenter", (d, idx, nodes) => enter.call(nodes[idx],d,simulation ))
+	// node.on("mouseleave", (d, idx, nodes) => leave.call(nodes[idx],d,simulation ))	
 	
-	node
-        .call(d3.drag()
-          .on("start", (d) => dragstarted(d,simulation))
-          .on("drag", (d) => dragged(d,simulation))
-          .on("end", (d) => dragended(d,simulation)))
+	// node
+  //       .call(d3.drag()
+  //         .on("start", (d) => dragstarted(d,simulation))
+  //         .on("drag", (d) => dragged(d,simulation))
+  //         .on("end", (d) => dragended(d,simulation)))
       
       
-           
-    simulation.nodes(data.nodes).on("tick", () => tick(link,node));
-    simulation.force("link").links(data.links);
-    simulation.alpha(1).restart();
+    simulationManager.apply(data.nodes, node, data.links, link);
+
+    // simulation.nodes(data.nodes).on("tick", () => tick(link,node));
+    // simulation.force("link").links(data.links);
+    // simulation.alpha(1).restart();
     
   }
   
@@ -194,9 +170,12 @@ var renderer;
 window.onload = () => {
   
   let svg = d3.select("svg"); 
-  let simulation = Simulation(svg);
+  let width = +svg.attr("width"),
+      height = +svg.attr("height");
+  //let simulation = Simulation(svg);
+  let simulationManager = new GraphSimulationManager(width,height);
 
-  renderer = Render(graph, svg, simulation, ticked);
+  renderer = Render(graph, svg, simulationManager);
   renderer.update();
   
   svg.on("click", function(e){
