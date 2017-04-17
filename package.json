@@ -11,10 +11,12 @@
   "license": "ISC",
   "dependencies": {
     "d3": "^4.7.4",
+    "fabric": "^1.7.9",
     "neo4j-driver": "^1.2.0"
   },
   "devDependencies": {
     "@types/d3": "^4.7.0",
+    "@types/fabric": "^1.5.23",
     "@types/lodash": "^4.14.61",
     "@types/node": "^7.0.12",
     "css-loader": "^0.28.0",

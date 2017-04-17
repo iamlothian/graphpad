@@ -52,7 +52,8 @@ module.exports = function() {
                 'd3-transition': "../node_modules/d3-transition",
                 'd3-voronoi': "../node_modules/d3-voronoi",
                 'd3-zoom': "../node_modules/d3-zoom",
-                'lodash': "../node_modules/lodash"
+                'lodash': "../node_modules/lodash",
+                'fabric': "../node_modules/fabric/dist/fabric.require.js"
             }),
             new webpack.optimize.CommonsChunkPlugin({
                 name: 'vendor',

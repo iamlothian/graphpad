@@ -7,7 +7,7 @@ export class GraphLink implements SimulationLinkDatum<GraphNode> {
     source:GraphNode
     target:GraphNode
     strength:number
-    
+
 }
 
 export interface GraphLinkSelection extends Selection<BaseType, GraphLink, HTMLElement, any> {}

@@ -1,63 +1,10 @@
 import * as d3 from 'd3';
 import graph from './data.js';
-import {GraphSimulationManager} from "!ts-loader!./simulation.ts"
+import {GraphSimulationManager} from "!ts-loader!./simulation.ts";
+import {fabric} from 'fabric';
 // Code goes here
 
 let color = d3.scaleOrdinal(d3.schemeCategory20);
-
-//###############################################
-// simulations
-//###############################################
-/*
-var Simulation = function(svg) {
-  
-  let width = +svg.attr("width"),
-      height = +svg.attr("height");
-  
-  let simulation = d3.forceSimulation();
-  
-  // bind / hold together
-  simulation.force("link", d3.forceLink()
-    .id(function(d) { return d.id; })
-    .distance(40)
-    .strength(1)
-  )
-  
-  // magnetic repel
-  simulation.force("charge", d3.forceManyBody()
-    .strength(function(d) { return d.charge || -50; })
-  )
-  
-  // touch repel
-  simulation.force("collide", d3.forceCollide()
-    .radius((d) => d.r)
-    .strength(1)
-  )
-  
-  // center gravity
-  simulation
-    .force("centerX", d3.forceX(width / 2).strength(0.05))
-    .force("centerY", d3.forceY(height / 2).strength(0.05));
-  
-  simulation.alphaTarget(0);
-  
-  return simulation
-  
-}
-*/
-
-function ticked(link, node) {
-  
-  link
-      .attr("x1", function(d) { return d.source.x; })
-      .attr("y1", function(d) { return d.source.y; })
-      .attr("x2", function(d) { return d.target.x; })
-      .attr("y2", function(d) { return d.target.y; });
-
-  node
-	  .style("transform", (d) => `translate3d(${d.x}px,${d.y}px, 0px)`)
-  
-}
 
 var Render = function(data, svg, simulationManager, tick){
   
@@ -169,33 +116,8 @@ var Render = function(data, svg, simulationManager, tick){
 var renderer;
 window.onload = () => {
   
-  let svg = d3.select("svg"); 
-  let width = +svg.attr("width"),
-      height = +svg.attr("height");
-  //let simulation = Simulation(svg);
-  let simulationManager = new GraphSimulationManager(width,height);
-
-  renderer = Render(graph, svg, simulationManager);
-  renderer.update();
-  
-  svg.on("click", function(e){
-	  var coords = d3.mouse(this);
-	  renderer.add(coords);
-  });
-  
-  // setInterval(() => {
-      // let id = renderer.add();
-      // console.log("add", id);
-      
-      // setTimeout(() => {
-        // let myid=id;
-        // console.log(
-          // myid,
-          // renderer.remove(myid)
-        // )
-      // }, 2500);
-      
-  // }, 2000);
+  initCanvas();
+  initSVG();
 
 }
 
@@ -226,14 +148,6 @@ function enter(d,simulation) {
 	d.r = d.r*1.5;
 	renderer.update();
 	
-// 	d3.select(this).style("r", (d) => d.r)
-  
-// 	simulation.force("collide", 
-// 	  d3.forcecollide()
-// 		.radius((d) => d.r)
-// 		.strength(1)
-// 	)
-	
 	if (!d3.event.active){ 
 	  simulation.alpha(0.1);
 	  simulation.alphaTarget(0.01).restart();
@@ -243,18 +157,61 @@ function enter(d,simulation) {
 function leave(d,simulation) {
 	d.r = d.r/1.5; 	
 	renderer.update();
-	
-// 	d3.select(this).style("r", (d) => d.r)
-	
-// 	simulation.force("collide", 
-// 	  d3.forceCollide()
-// 		.radius((d) => d.r)
-// 		.strength(1)
-// 	)
-	  
+
 	if (!d3.event.active) {
 	  simulation.alpha(1);
 	  simulation.alphaTarget(0).restart();
 	}
 	
+}
+
+let initSVG = function(){
+
+  let svg = d3.select("svg"); 
+  let width = +svg.attr("width"),
+      height = +svg.attr("height");
+  //let simulation = Simulation(svg);
+  let simulationManager = new GraphSimulationManager(width,height);
+
+  renderer = Render(graph, svg, simulationManager);
+  renderer.update();
+  
+  svg.on("click", function(e){
+	  var coords = d3.mouse(this);
+	  renderer.add(coords);
+  });
+  
+  // setInterval(() => {
+      // let id = renderer.add();
+      // console.log("add", id);
+      
+      // setTimeout(() => {
+        // let myid=id;
+        // console.log(
+          // myid,
+          // renderer.remove(myid)
+        // )
+      // }, 2500);
+      
+  // }, 2000);
+
+}
+
+let initCanvas =  function() {
+
+  var canvas = new fabric.Canvas('c', {backgroundColor : '#EEE'});
+
+
+  var rect = new fabric.Rect({
+      top : 0,
+      left : 0,
+      width : 100,
+      height : 100,
+      fill : '#F00',
+      selectable: false
+  });
+
+  canvas.add(rect);
+  canvas.renderAll();
+
 }
