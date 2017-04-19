@@ -1,14 +1,14 @@
 //import * as _ from 'lodash';
 import * as d3force from 'd3-force';
 import * as d3selection from 'd3-selection';
-import { GraphNode, GraphNodeSelection } from 'graphNode';
-import { GraphLink, GraphLinkSelection } from 'graphLink';
+import { Node, D3NodeSelection } from './node';
+import { Link, D3LinkSelection } from './link';
 
 //###############################################
 // simulations
 //###############################################
 
-export class GraphSimulationManager {
+export class Manager {
 
   private width:number;
   private height:number;
@@ -26,11 +26,14 @@ export class GraphSimulationManager {
     this.centerForce();
 
     this._simulation.alphaTarget(0);
+
   } 
 
   //get simulation() { return this._simulation; }
 
-  private ticked(node:GraphNodeSelection, link:GraphLinkSelection) {
+  private ticked(node:D3NodeSelection, link:D3LinkSelection) {
+
+    this.onUpdate(node, link);
 
     link
         .attr("x1", function(d) { return d.source.x; })
@@ -39,14 +42,18 @@ export class GraphSimulationManager {
         .attr("y2", function(d) { return d.target.y; });
 
     node
-      .style("transform", (d:GraphNode) => `translate3d(${d.x}px,${d.y}px, 0px)`)
+      .style("transform", (d:Node) => `translate3d(${d.x}px,${d.y}px, 0px)`)
     
   }
 
-  public linkForce(links:GraphLink[] = []){
+  public onUpdate(node:D3NodeSelection, link:D3LinkSelection){
+
+  }
+
+  public linkForce(links:Link[] = []){
 
       this._simulation.force("link", d3force.forceLink()
-        .id(function(d:GraphNode, i, nodes) { return d.id.toString(); })
+        .id(function(d:Node, i, nodes) { return d.id.toString(); })
         .distance(40)
         .strength(1)
         .links(links)
@@ -57,7 +64,7 @@ export class GraphSimulationManager {
 
       // magnetic repel
       this._simulation.force("charge", d3force.forceManyBody()
-        .strength(function(d:GraphNode) { 
+        .strength(function(d:Node) { 
           return d.charge || charge; })
       )
   }
@@ -65,7 +72,7 @@ export class GraphSimulationManager {
   public collideForce(strength:number = 1){
       // touch repel
       this._simulation.force("collide", d3force.forceCollide()
-        .radius((d:GraphNode) => d.r)
+        .radius((d:Node) => d.r)
         .strength(strength)
       )
   }
@@ -85,10 +92,10 @@ export class GraphSimulationManager {
    * @param linkSelection 
    */
   public apply(
-      nodes:GraphNode[], 
-      nodeSelection:GraphNodeSelection,
-      links:GraphLink[],
-      linkSelection:GraphLinkSelection
+      nodes:Node[], 
+      nodeSelection:D3NodeSelection,
+      links:Link[],
+      linkSelection:D3LinkSelection
   ){
     // update nodes and links
     this._simulation
@@ -98,7 +105,7 @@ export class GraphSimulationManager {
     this.linkForce(links);
 
     this._simulation.alpha(1).restart();
-  }
+  } 
 
   public slowSimTime(){
     this._simulation.alpha(0.01);

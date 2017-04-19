@@ -1,8 +1,9 @@
 import * as d3 from 'd3';
 import graph from './data.js';
-import {GraphSimulationManager} from "!ts-loader!./simulation.ts";
+import * as Simulation from './simulation'
 import {fabric} from 'fabric';
-// Code goes here
+
+import * as Visulisation from './visulisation/svg'
 
 let color = d3.scaleOrdinal(d3.schemeCategory20);
 
@@ -116,8 +117,14 @@ var Render = function(data, svg, simulationManager, tick){
 var renderer;
 window.onload = () => {
   
-  initCanvas();
-  initSVG();
+  let svg = d3.select("svg"); 
+  let width = +svg.attr("width"),
+      height = +svg.attr("height");
+
+  let simulationManager = new Simulation.Manager(width,height);
+
+  initCanvas(simulationManager);
+  initSVG(simulationManager, svg);
 
 }
 
@@ -165,13 +172,7 @@ function leave(d,simulation) {
 	
 }
 
-let initSVG = function(){
-
-  let svg = d3.select("svg"); 
-  let width = +svg.attr("width"),
-      height = +svg.attr("height");
-  //let simulation = Simulation(svg);
-  let simulationManager = new GraphSimulationManager(width,height);
+let initSVG = function(simulationManager, svg){
 
   renderer = Render(graph, svg, simulationManager);
   renderer.update();
@@ -197,21 +198,29 @@ let initSVG = function(){
 
 }
 
-let initCanvas =  function() {
+let initCanvas =  function(simulationManager) {
 
   var canvas = new fabric.Canvas('c', {backgroundColor : '#EEE'});
 
+    var node = new fabric.Circle({
+        top : 0,
+        left : 0,
+        strokeWidth: 2,
+        radius: 12,
+        fill : '#F00',
+        stroke: '#000'
+        //selectable: false
+    });
+    node.hasControls = node.hasBorders = false;
 
-  var rect = new fabric.Rect({
-      top : 0,
-      left : 0,
-      width : 100,
-      height : 100,
-      fill : '#F00',
-      selectable: false
-  });
-
-  canvas.add(rect);
+  canvas.add(node);
   canvas.renderAll();
 
+  simulationManager.onUpdate = function(nodes, links){
+
+    canvas.renderAll();
+
+  }
+
 }
+

@@ -1,7 +1,7 @@
 import {SimulationNodeDatum} from 'd3-force';
 import {Selection, BaseType} from 'd3-selection';
 
-export class GraphNode implements SimulationNodeDatum {
+export class Node implements SimulationNodeDatum {
 
     id:number
     r:number
@@ -12,4 +12,4 @@ export class GraphNode implements SimulationNodeDatum {
     
 }
 
-export interface GraphNodeSelection extends Selection<BaseType, GraphNode, HTMLElement, any> {}
+export interface D3NodeSelection extends Selection<BaseType, Node, HTMLElement, any> {}

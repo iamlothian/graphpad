@@ -13,7 +13,7 @@ module.exports = function() {
         },
         entry: {
             css: "./app/style.css",
-            main: './app/index.js'
+            main: './app/index.ts'
         },
         output: {
             filename: '[name].[chunkhash].js',
