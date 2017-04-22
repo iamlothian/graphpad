@@ -11,6 +11,9 @@ module.exports = function() {
                 {test: /\.ts$/, use: 'ts-loader'}
             ]
         },
+        resolve: {
+            extensions: [".tsx", ".ts", ".js"]
+        },
         entry: {
             css: "./app/style.css",
             main: './app/index.ts'

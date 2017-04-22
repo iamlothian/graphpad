@@ -1,8 +1,8 @@
 //import * as _ from 'lodash';
 import * as d3force from 'd3-force';
 import * as d3selection from 'd3-selection';
-import { Node, D3NodeSelection } from './node';
-import { Link, D3LinkSelection } from './link';
+import { Node } from './node';
+import { FlatLink } from './link';
 
 //###############################################
 // simulations
@@ -31,26 +31,25 @@ export class Manager {
 
   //get simulation() { return this._simulation; }
 
-  private ticked(node:D3NodeSelection, link:D3LinkSelection) {
+  // private ticked(node:D3NodeSelection, link:D3LinkSelection) {
 
-    this.onUpdate(node, link);
+  //   this.onUpdate(node, link);
 
-    link
-        .attr("x1", function(d) { return d.source.x; })
-        .attr("y1", function(d) { return d.source.y; })
-        .attr("x2", function(d) { return d.target.x; })
-        .attr("y2", function(d) { return d.target.y; });
+  //   link
+  //       .attr("x1", function(d) { return d.source.x; })
+  //       .attr("y1", function(d) { return d.source.y; })
+  //       .attr("x2", function(d) { return d.target.x; })
+  //       .attr("y2", function(d) { return d.target.y; });
 
-    node
-      .style("transform", (d:Node) => `translate3d(${d.x}px,${d.y}px, 0px)`)
+  //   node
+  //     .style("transform", (d:Node) => `translate3d(${d.x}px,${d.y}px, 0px)`)
     
-  }
+  // }
 
-  public onUpdate(node:D3NodeSelection, link:D3LinkSelection){
+  /** Called by tick function */
+  public onUpdate(nodes:Node[], links:FlatLink[]) {}
 
-  }
-
-  public linkForce(links:Link[] = []){
+  public linkForce(links:FlatLink[] = []){
 
       this._simulation.force("link", d3force.forceLink()
         .id(function(d:Node, i, nodes) { return d.id.toString(); })
@@ -85,22 +84,15 @@ export class Manager {
   }
 
   /**
-   * apply changes to the data and selection of the graph, and restart the simulation
+   * Set the links and nodes data of the graph, and restart the simulation
    * @param nodes 
-   * @param nodeSelection 
    * @param links 
-   * @param linkSelection 
    */
-  public apply(
-      nodes:Node[], 
-      nodeSelection:D3NodeSelection,
-      links:Link[],
-      linkSelection:D3LinkSelection
-  ){
+  public data(nodes:Node[], links:FlatLink[]){
     // update nodes and links
     this._simulation
       .nodes(nodes)
-      .on("tick", () => this.ticked(nodeSelection,linkSelection));
+      .on("tick", () => this.onUpdate(nodes,links));
 
     this.linkForce(links);
 

@@ -5,9 +5,9 @@ export class Node implements SimulationNodeDatum {
 
     id:number
     r:number
-    x:number
-    y:number
-    charge:number
+    x?:number
+    y?:number
+    charge?:number
     group:number
     
 }
