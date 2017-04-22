@@ -1,12 +1,9 @@
 
-import * as Simulation from '../simulation'
 
-class Manager {
+export class Manager {
 
     constructor(){
 
     }
-
-    
 
 }

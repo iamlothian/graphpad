@@ -1,6 +1,7 @@
 import * as Simulation from '../../simulation'
 import * as Visulisation  from '../manager';
 import {NodeRenderer}  from './node';
+import {LinkRenderer}  from './link';
 import * as d3 from 'd3';
 
 let color = d3.scaleOrdinal(d3.schemeCategory20);
@@ -13,7 +14,8 @@ export class Manager implements Visulisation.Manager {
     private nodeRoot:Selection
     private linkRoot:Selection
 
-    private nodeRendere:NodeRenderer;
+    private nodeRenderer:NodeRenderer;
+    private linkRenderer:LinkRenderer;
 
     constructor(svg:Selection){
 
@@ -21,16 +23,23 @@ export class Manager implements Visulisation.Manager {
         this.nodeRoot = this.svg.append("g").attr("id","nodes");
         this.linkRoot = this.svg.append("g").attr("id","links");   
 
-        this.nodeRendere = new NodeRenderer(this.nodeRoot);
+        this.nodeRenderer = new NodeRenderer(this.nodeRoot);
+        this.linkRenderer = new LinkRenderer(this.linkRoot);
 
     }
 
     public data(nodes:Simulation.Node[], links:Simulation.FlatLink[]){
-        this.nodeRendere.update(nodes);
+        
+        this.linkRenderer.update(links);
+        this.nodeRenderer.update(nodes);
+        
     }
 
     public render(nodes:Simulation.Node[], links:Simulation.FlatLink[]){
-        this.nodeRendere.draw(nodes);
+
+        this.linkRenderer.draw(links);
+        this.nodeRenderer.draw(nodes);
+        
     }
 
 }

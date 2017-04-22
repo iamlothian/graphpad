@@ -18,4 +18,4 @@ export class DeepLink implements SimulationLinkDatum<Node> {
 
 }
 
-export interface D3LinkSelection extends Selection<BaseType, DeepLink, HTMLElement, any> {}
+export interface D3LinkSelection extends Selection<BaseType, SimulationLinkDatum<Node>, HTMLElement, any> {}
