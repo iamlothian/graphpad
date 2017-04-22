@@ -8,12 +8,10 @@ interface Selection extends d3.Selection<d3.BaseType, {}, HTMLElement, undefined
 
 export class NodeRenderer implements Renderable {
 
-    private svg:Selection
     private nodeRoot:Selection
     private nodes:Simulation.D3NodeSelection
 
-    constructor(svg:Selection, nodeRoot:Selection ){
-        this.svg = svg;
+    constructor(nodeRoot:Selection ){
         this.nodeRoot = nodeRoot;
     }
 
@@ -23,7 +21,7 @@ export class NodeRenderer implements Renderable {
 
     public update(nodes:Simulation.Node[]):void {
 
-        this.nodes = this.svg.selectAll("#nodes")
+        this.nodes = this.nodeRoot
         .selectAll("circle")
         .data(() => nodes, (d:Simulation.Node) => d.id.toString())
         

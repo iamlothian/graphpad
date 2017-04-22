@@ -21,7 +21,7 @@ export class Manager implements Visulisation.Manager {
         this.nodeRoot = this.svg.append("g").attr("id","nodes");
         this.linkRoot = this.svg.append("g").attr("id","links");   
 
-        this.nodeRendere = new NodeRenderer(this.svg, this.nodeRoot);
+        this.nodeRendere = new NodeRenderer(this.nodeRoot);
 
     }
 
