@@ -1,5 +1,6 @@
 import * as Simulation from '../../simulation'
 import { Renderable } from '../renderable';
+import { Manager } from './manager';
 import * as d3 from 'd3';
 
 let color = d3.scaleOrdinal(d3.schemeCategory20);
@@ -11,11 +12,11 @@ export class LinkRenderer implements Renderable {
     private linkRoot:Selection
     private links:Simulation.D3LinkSelection
 
-    constructor(linkRoot:Selection ){
+    constructor(manager:Manager, linkRoot:Selection ){
         this.linkRoot = linkRoot;
     }
 
-    public draw(links:Simulation.FlatLink[]):void {
+    public draw(links:Simulation.FlatLink[], simulationManager:Simulation.Manager):void {
         this.links
         .attr("x1", function(d:Simulation.DeepLink) { return d.source.x; })
         .attr("y1", function(d:Simulation.DeepLink) { return d.source.y; })
@@ -23,7 +24,7 @@ export class LinkRenderer implements Renderable {
         .attr("y2", function(d:Simulation.DeepLink) { return d.target.y; });
     }
 
-    public update(links:Simulation.FlatLink[]):void {
+    public update(links:Simulation.FlatLink[], simulationManager:Simulation.Manager):void {
         
         // Link
         this.links = this.linkRoot.selectAll("line")

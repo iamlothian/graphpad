@@ -3,12 +3,30 @@ import * as d3force from 'd3-force';
 import * as d3selection from 'd3-selection';
 import { Node } from './node';
 import { FlatLink } from './link';
+import * as Event from '../event';
+
+
+class UpdateListener implements Event.Listener {
+
+  Name: string;
+
+  trigger: () => void;
+  addHandler(handle:(nodes:Node[], links:FlatLink[], simulationManager:Manager)=>any) : number {
+    
+    return 1;
+
+  }
+  removeHandler(handle: number): void {
+    
+  }
+
+}
 
 //###############################################
 // simulations
 //###############################################
 
-export class Manager {
+export class Manager implements Event.Listenable {
 
   private width:number;
   private height:number;
@@ -27,27 +45,18 @@ export class Manager {
 
     this._simulation.alphaTarget(0);
 
-  } 
+  }  
 
-  //get simulation() { return this._simulation; }
+  addEventListener(){
 
-  // private ticked(node:D3NodeSelection, link:D3LinkSelection) {
+  }
 
-  //   this.onUpdate(node, link);
+  removeEventListener(){
 
-  //   link
-  //       .attr("x1", function(d) { return d.source.x; })
-  //       .attr("y1", function(d) { return d.source.y; })
-  //       .attr("x2", function(d) { return d.target.x; })
-  //       .attr("y2", function(d) { return d.target.y; });
-
-  //   node
-  //     .style("transform", (d:Node) => `translate3d(${d.x}px,${d.y}px, 0px)`)
-    
-  // }
+  }
 
   /** Called by tick function */
-  public onUpdate(nodes:Node[], links:FlatLink[]) {}
+  public onUpdate(nodes:Node[], links:FlatLink[], simulationManager:Manager) {}
 
   public linkForce(links:FlatLink[] = []){
 
@@ -92,18 +101,21 @@ export class Manager {
     // update nodes and links
     this._simulation
       .nodes(nodes)
-      .on("tick", () => this.onUpdate(nodes,links));
+      .on("tick", () => this.onUpdate(nodes,links,this));
 
     this.linkForce(links);
 
     this._simulation.alpha(1).restart();
   } 
 
-  public slowSimTime(){
+  /** slowly progress sim but never settle */
+  public warmSimTime(){
     this._simulation.alpha(0.01);
 	  this._simulation.alphaTarget(0.1).restart();
   }
-  public normalSimTime(){
+
+  /** reheat sim and settle */
+  public heatSimTime(){
     this._simulation.alpha(1);
 	  this._simulation.alphaTarget(0).restart();
   }

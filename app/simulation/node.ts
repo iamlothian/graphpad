@@ -7,6 +7,8 @@ export class Node implements SimulationNodeDatum {
     r:number
     x?:number
     y?:number
+    fx?:number
+    fy?:number
     charge?:number
     group:number
     
